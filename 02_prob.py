@@ -27,6 +27,7 @@ print(f'Part 1: Total points in proposed games is {sum(all_game_pts)}')
 # lose - X, tie - Y, win - Z
 
 # Prioritizing re-writing as little of the above as possible over making this neat
+# God this is ugly
 pt_game_pts = []
 for game in raw_data:
     opponent = game.split(' ')[0]
@@ -34,4 +35,8 @@ for game in raw_data:
     game_pts = 0
 
     if outcome == 'X':
-        pairs =
+        pairs = [(pair.split(' ')[0], pair.split(' ')[1]) for pair in my_loss]
+        this_game = [p for p in pairs if opponent in p][0][1]
+    if outcome == 'Y':
+        pairs = ... # had to stop for now
+
