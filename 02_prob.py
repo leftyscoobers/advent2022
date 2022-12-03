@@ -1,42 +1,58 @@
-# Rock paper scissors wtih
-# Opponent rock - A, paper - B, scissors - C
-# Your play rock - X, paper - Y, scissors - Z
+# Rock paper scissors with mysterious input plan
+
+opponent_shape = {'A': 'rock', 'B': 'paper', 'C': 'scissors'}
+my_shape = {'X': 'rock', 'Y': 'paper', 'Z': 'scissors'}
+
+win = [('rock', 'paper'), ('paper', 'scissors'), ('scissors', 'rock')]
+lose = [('rock', 'scissors'), ('paper', 'rock'), ('scissors', 'paper')]
+shape_points = {'rock': 1, 'paper': 2, 'scissors': 3}
+
+
+def get_plays(input_line):
+    opp, me = input_line.split(' ')
+    return opponent_shape[opp], my_shape[me]
+
 
 raw_data = [l.strip() for l in open('02_input.txt', 'r').readlines()]
-
-my_wins = ['C X', 'A Y', 'B Z']
-my_ties = ['A X', 'B Y', 'C Z']
-my_loss = ['B X', 'C Y', 'A Z']
-shape_points = {'X': 1, 'Y': 2, 'Z': 3}
 
 all_game_pts = []
 for game in raw_data:
     game_pts = 0
-    my_play = game.split(' ')[1]
-    round_shape_pts = shape_points[my_play]
-    if game in my_wins:
-        game_pts = 6
-    elif game in my_ties:
-        game_pts = 3
+    elf, me = get_plays(game)
+    pts_for_my_shape = shape_points[me]
+    if (elf, me) in win:
+        game_pts = 6 + pts_for_my_shape
+    elif (elf, me) in lose:
+        game_pts = 0 + pts_for_my_shape
+    else:
+        game_pts = 3 + pts_for_my_shape
 
-    all_game_pts.append(game_pts + round_shape_pts)
+    all_game_pts.append(game_pts)
+
 
 print(f'Part 1: Total points in proposed games is {sum(all_game_pts)}')
 
 # Now the second column is not my play but how the round should end
 # lose - X, tie - Y, win - Z
 
-# Prioritizing re-writing as little of the above as possible over making this neat
-# God this is ugly
-pt_game_pts = []
-for game in raw_data:
-    opponent = game.split(' ')[0]
-    outcome = game.split(' ')[1]
-    game_pts = 0
 
-    if outcome == 'X':
-        pairs = [(pair.split(' ')[0], pair.split(' ')[1]) for pair in my_loss]
-        this_game = [p for p in pairs if opponent in p][0][1]
+def get_points_from_outcome(input_line):
+    opp, outcome = input_line.split(' ')
+    opp_shape = opponent_shape[opp]
+    pts = 0
     if outcome == 'Y':
-        pairs = ... # had to stop for now
+        pts = 3 + shape_points[opp_shape]
+    elif outcome == 'X':
+        my_play = [pair for pair in lose if pair[0] == opp_shape][0][1]
+        pts = 0 + shape_points[my_play]
+    else:
+        my_play = [pair for pair in win if pair[0] == opp_shape][0][1]
+        pts = 6 + shape_points[my_play]
+    return pts
+
+
+pt2_game_pts = [get_points_from_outcome(game) for game in raw_data]
+
+print(f'Part 2: Total points from pre-determined outcomes is {sum(pt2_game_pts)}')
+
 
