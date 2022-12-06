@@ -15,3 +15,7 @@ Find repeating elements in multiple strings.
 **Problem 4**
 
 Comparing sets of ranges to each other (intersections)
+
+**Problem 5**
+
+Lots of annoying file parsing, then follow directions to rearrange elements of several arrays between each other
