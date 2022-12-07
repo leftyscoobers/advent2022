@@ -19,3 +19,11 @@ Comparing sets of ranges to each other (intersections)
 **Problem 5**
 
 Lots of annoying file parsing, then follow directions to rearrange elements of several arrays between each other
+
+**Problem 6**
+
+Simple find "unique" string in long string problem.
+
+**Problem 7**
+
+Parse an annoying string file with terminal output of navigating the file system, then calculate the total size of each dir.
