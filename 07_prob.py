@@ -36,56 +36,40 @@ print(f"Created file system dictionary")
 # Could do recursively, which breaks my brain every time, or just a while loop?
 
 
-def check_for_nums(file_list_in_dir):
-    check_vals = [f.isnumeric() for f in file_list_in_dir]
-    if all(check_vals):
-        return True
-    else:
-        return False
+def consolidate_nums(file_list):
+    sum_so_far = sum([int(x) for x in file_list if x.isnumeric()])
+    strings_left = [x for x in file_list if not x.isnumeric()]
+    return [str(int(sum_so_far))] + strings_left
 
 
-def check_all_numeric(file_sys_dict):
-    dir_all_nums = []
-    for key, value in file_sys_dict.items():
-        check_vals = check_for_nums(value)
-        if not check_vals:
-            return False
-    return True
+def is_all_nums(file_list):
+    return all([x.isnumeric() for x in file_list])
 
 
+size_limit = 1e5
 file_sys_sizes = deepcopy(file_sys)
-all_good = check_all_numeric(file_sys_sizes)
-loops = 0
-while not all_good:
-    loops += 1
-    print(loops)
-    for dir, ls in file_sys_sizes.items():
-        if check_for_nums(ls):
-            continue
-        else:
-            for f in ls:
-                # print(f"list item {f}")
-                if f.isnumeric():
-                    continue
-                else:
-                    sub_files = file_sys_sizes[f]
-                    orig_dir_list = file_sys_sizes[dir]
-                    # print(f"original_list: {file_sys_sizes[dir]}")
-                    orig_dir_list.remove(f)
-                    new_size_list = orig_dir_list + sub_files
-                    file_sys_sizes[dir] = new_size_list
-                    # print(f"new list: {file_sys_sizes[dir]}")
-    all_good = check_all_numeric(file_sys_sizes)
+del file_sys_sizes['home']
+
+for i, dir in enumerate(file_sys_sizes.keys()):
+    print(f"{dir} with original {file_sys[dir]}")
+
+    # Loop through until we have only one number (adding as we go)
+    while not is_all_nums(file_sys_sizes[dir]):
+        starting_list = file_sys_sizes[dir]
+        for f in starting_list:
+            if f.isnumeric():
+                continue
+            else:
+                sub_list = file_sys_sizes[f]
+                old_list = file_sys_sizes[dir]
+                old_list.remove(f)
+                file_sys_sizes[dir] = old_list + sub_list
+        consolidated = consolidate_nums(file_sys_sizes[dir])
+        file_sys_sizes[dir] = consolidated
+
+    print(f"finished key {dir}, index {i}")
+    # some of these are still going to be > 1....
+
 
 # But we're not done yet! :-(
-# Now get the total size of each directory
-# dir_totals = {}
-# for dir, sizes in file_sys_sizes.items():
-#     if dir == 'home':
-#         continue
-#     else:
-#         dir_totals[dir] = sum([int(s) for s in sizes])
-#
-# # Now get sum of all dirs smaller than 100,000
-# print(f'Total from small dirs = {sum([s for s in dir_totals.values() if s < 1e5])}')
 
